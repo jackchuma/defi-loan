@@ -4,6 +4,7 @@ const { ethers } = require("hardhat");
 describe("Loan", function () {
   before(async function() {
     this.Loan = await ethers.getContractFactory("Loan");
+    [this.owner, this.alice, this.bob, this.carol] = await ethers.getSigners();
   });
 
   context("Deployment", async function() {
@@ -17,6 +18,20 @@ describe("Loan", function () {
       const loan = await this.Loan.deploy(120, 5);
       await loan.deployed();
       expect((await loan.interest()).toNumber()).to.equal(5);
+    });
+  });
+
+  context("Request loan", async function() {
+    this.beforeEach(async function() {
+      this.loan = await this.Loan.deploy(120, 5);
+      await this.loan.deployed();
+    });
+
+    it ("Anyone can request a loan", async function() {
+      await this.loan.connect(this.owner).requestLoan(10000);
+      await this.loan.connect(this.alice).requestLoan(10000);
+      await this.loan.connect(this.bob).requestLoan(10000);
+      await this.loan.connect(this.carol).requestLoan(10000);
     });
   });
 });
