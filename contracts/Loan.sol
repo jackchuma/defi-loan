@@ -36,6 +36,7 @@ contract Loan {
         uint256 _id = idCount.current();
         LoanAgreement storage _loan = pendingLoans[_id];
         _loan.id = _id;
+        _loan.amount = _amount;
         idCount.increment();
     }
 }
