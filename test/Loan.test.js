@@ -41,5 +41,16 @@ describe("Loan", function () {
       await this.loan.connect(this.alice).requestLoan(10000);
       expect((await this.loan.idCount()).toNumber()).to.equal(2);
     });
+
+    it ("requestLoan stores proper ID", async function() {
+      await this.loan.connect(this.owner).requestLoan(10000);
+      await this.loan.connect(this.alice).requestLoan(10000);
+      await this.loan.connect(this.bob).requestLoan(10000);
+      await this.loan.connect(this.carol).requestLoan(10000);
+      expect((await this.loan.pendingLoans(0)).id.toNumber()).to.equal(0);
+      expect((await this.loan.pendingLoans(1)).id.toNumber()).to.equal(1);
+      expect((await this.loan.pendingLoans(2)).id.toNumber()).to.equal(2);
+      expect((await this.loan.pendingLoans(3)).id.toNumber()).to.equal(3);
+    });
   });
 });

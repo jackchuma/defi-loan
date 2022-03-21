@@ -33,6 +33,9 @@ contract Loan {
 
     // TODO: Don't allow another loan request if msg.sender has pending loan
     function requestLoan(uint256 _amount) external {
+        uint256 _id = idCount.current();
+        LoanAgreement storage _loan = pendingLoans[_id];
+        _loan.id = _id;
         idCount.increment();
     }
 }
