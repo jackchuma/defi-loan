@@ -33,5 +33,13 @@ describe("Loan", function () {
       await this.loan.connect(this.bob).requestLoan(10000);
       await this.loan.connect(this.carol).requestLoan(10000);
     });
+
+    it ("requestLoan increments idCount", async function() {
+      expect((await this.loan.idCount()).toNumber()).to.equal(0);
+      await this.loan.connect(this.owner).requestLoan(10000);
+      expect((await this.loan.idCount()).toNumber()).to.equal(1);
+      await this.loan.connect(this.alice).requestLoan(10000);
+      expect((await this.loan.idCount()).toNumber()).to.equal(2);
+    });
   });
 });
