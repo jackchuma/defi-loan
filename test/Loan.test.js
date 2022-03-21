@@ -8,9 +8,15 @@ describe("Loan", function () {
 
   context("Deployment", async function() {
     it ("Should save term of loan (in months) on deployment", async function() {
-      const loan = await this.Loan.deploy(120);
+      const loan = await this.Loan.deploy(120, 5);
       await loan.deployed();
       expect((await loan.length()).toNumber()).to.equal(120);
+    });
+
+    it ("Should save interest rate on deployment", async function() {
+      const loan = await this.Loan.deploy(120, 5);
+      await loan.deployed();
+      expect((await loan.interest()).toNumber()).to.equal(5);
     });
   });
 });
