@@ -64,6 +64,17 @@ describe("Loan", function () {
       expect((await this.loan.pendingLoans(3)).amount.toNumber()).to.equal(7500);
     });
 
+    it ("requestLoan stores proper requestor", async function() {
+      await this.loan.connect(this.owner).requestLoan(10000);
+      await this.loan.connect(this.alice).requestLoan(20000);
+      await this.loan.connect(this.bob).requestLoan(5000);
+      await this.loan.connect(this.carol).requestLoan(7500);
+      expect((await this.loan.pendingLoans(0)).requestor).to.equal(this.owner.address);
+      expect((await this.loan.pendingLoans(1)).requestor).to.equal(this.alice.address);
+      expect((await this.loan.pendingLoans(2)).requestor).to.equal(this.bob.address);
+      expect((await this.loan.pendingLoans(3)).requestor).to.equal(this.carol.address);
+    });
+
     it ("requestLoan stores pendingLoanIds", async function() {
       await this.loan.connect(this.owner).requestLoan(10000);
       await this.loan.connect(this.alice).requestLoan(20000);

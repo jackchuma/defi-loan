@@ -23,6 +23,7 @@ contract Loan {
 
     struct LoanAgreement {
         uint256 id;
+        address requestor;
         uint256 amount;
         uint256 monthlyPayment;
     }
@@ -38,6 +39,7 @@ contract Loan {
         LoanAgreement storage _loan = pendingLoans[_id];
         _loan.id = _id;
         pendingLoanIds.push(_id);
+        _loan.requestor = msg.sender;
         _loan.amount = _amount;
         idCount.increment();
     }
