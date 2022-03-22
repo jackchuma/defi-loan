@@ -63,5 +63,16 @@ describe("Loan", function () {
       expect((await this.loan.pendingLoans(2)).amount.toNumber()).to.equal(5000);
       expect((await this.loan.pendingLoans(3)).amount.toNumber()).to.equal(7500);
     });
+
+    it ("requestLoan stores pendingLoanIds", async function() {
+      await this.loan.connect(this.owner).requestLoan(10000);
+      await this.loan.connect(this.alice).requestLoan(20000);
+      await this.loan.connect(this.bob).requestLoan(5000);
+      await this.loan.connect(this.carol).requestLoan(7500);
+      expect((await this.loan.pendingLoanIds(0)).toNumber()).to.equal(0);
+      expect((await this.loan.pendingLoanIds(1)).toNumber()).to.equal(1);
+      expect((await this.loan.pendingLoanIds(2)).toNumber()).to.equal(2);
+      expect((await this.loan.pendingLoanIds(3)).toNumber()).to.equal(3);
+    });
   });
 });

@@ -18,6 +18,7 @@ contract Loan {
     uint256 public length;
     uint256 public interest;
 
+    uint256[] public pendingLoanIds;
     mapping(uint256 => LoanAgreement) public pendingLoans;
 
     struct LoanAgreement {
@@ -36,6 +37,7 @@ contract Loan {
         uint256 _id = idCount.current();
         LoanAgreement storage _loan = pendingLoans[_id];
         _loan.id = _id;
+        pendingLoanIds.push(_id);
         _loan.amount = _amount;
         idCount.increment();
     }
