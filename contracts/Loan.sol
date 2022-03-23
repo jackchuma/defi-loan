@@ -3,11 +3,13 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 /*
  * Smart contract to facilitate a DeFi loan
  * 
  * This is meant to be a single type of loan (i.e. loans of a fixed length)
+ * Have lenders deposit money into the smart contract to earn interest
 */
 
 contract Loan {
@@ -25,7 +27,6 @@ contract Loan {
         uint256 id;
         address requestor;
         uint256 amount;
-        uint256 monthlyPayment;
     }
 
     constructor(uint256 _length, uint256 _interest) {
