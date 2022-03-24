@@ -120,5 +120,10 @@ describe("Loan", function () {
       await this.loan.connect(this.owner).deposit(1000000);
       expect((await this.loan.balance()).toNumber()).to.equal(1000000);
     });
+
+    it ("Contract keeps track of user balances", async function() {
+      await this.loan.connect(this.owner).deposit(1000000);
+      expect((await this.loan.userBalances(this.owner.address)).toNumber()).to.equal(1000000);
+    });
   });
 });

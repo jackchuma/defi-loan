@@ -25,6 +25,7 @@ contract Loan {
 
     uint256[] public pendingLoanIds;
     mapping(uint256 => LoanAgreement) public pendingLoans;
+    mapping(address => uint256) public userBalances;
 
     struct LoanAgreement {
         uint256 id;
@@ -52,5 +53,6 @@ contract Loan {
     function deposit(uint256 _amount) external payable {
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
         balance += _amount;
+        userBalances[msg.sender] += _amount;
     }
 }
