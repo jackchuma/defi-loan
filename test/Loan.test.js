@@ -4,6 +4,7 @@ const { ethers } = require("hardhat");
 describe("Loan", function () {
   before(async function() {
     this.Loan = await ethers.getContractFactory("Loan");
+    this.USDC = await ethers.getContractFactory("USDC");
     [this.owner, this.alice, this.bob, this.carol] = await ethers.getSigners();
   });
 
@@ -84,6 +85,18 @@ describe("Loan", function () {
       expect((await this.loan.pendingLoanIds(1)).toNumber()).to.equal(1);
       expect((await this.loan.pendingLoanIds(2)).toNumber()).to.equal(2);
       expect((await this.loan.pendingLoanIds(3)).toNumber()).to.equal(3);
+    });
+  });
+
+  context("Deposit money to contract", async function() {
+    it.only("Test function", async function() {
+      this.usdc = await this.USDC.deploy();
+      await this.usdc.deployed();
+      this.loan = await this.Loan.deploy(120, 5, this.usdc.address);
+      await this.loan.deployed();
+      await this.usdc.approve(this.loan.address, 1000000);
+      await this.loan.connect(this.owner).deposit(1000000);
+      console.log((await this.usdc.balanceOf(this.loan.address)).toNumber());
     });
   });
 });

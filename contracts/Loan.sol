@@ -15,6 +15,8 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 contract Loan {
     using Counters for Counters.Counter;
 
+    address private usdc;
+
     Counters.Counter public idCount;
 
     uint256 public length;
@@ -29,9 +31,10 @@ contract Loan {
         uint256 amount;
     }
 
-    constructor(uint256 _length, uint256 _interest) {
+    constructor(uint256 _length, uint256 _interest, address _usdc) {
         length = _length;
         interest = _interest;
+        usdc = _usdc;
     }
 
     // TODO: Don't allow another loan request if msg.sender has pending loan
@@ -43,5 +46,9 @@ contract Loan {
         _loan.requestor = msg.sender;
         _loan.amount = _amount;
         idCount.increment();
+    }
+
+    function deposit(uint256 _amount) external payable {
+        IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
     }
 }
