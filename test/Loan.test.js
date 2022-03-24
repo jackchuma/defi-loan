@@ -10,21 +10,31 @@ describe("Loan", function () {
 
   context("Deployment", async function() {
     it ("Should save term of loan (in months) on deployment", async function() {
-      const loan = await this.Loan.deploy(120, 5);
+      const usdc = await this.USDC.deploy();
+      await usdc.deployed();
+      const loan = await this.Loan.deploy(120, 5, usdc.address);
       await loan.deployed();
       expect((await loan.length()).toNumber()).to.equal(120);
     });
 
     it ("Should save interest rate on deployment", async function() {
-      const loan = await this.Loan.deploy(120, 5);
+      const usdc = await this.USDC.deploy();
+      await usdc.deployed();
+      const loan = await this.Loan.deploy(120, 5, usdc.address);
       await loan.deployed();
       expect((await loan.interest()).toNumber()).to.equal(5);
+    });
+
+    xit ("Should save usdc address on deployment", async function() {
+
     });
   });
 
   context("Request loan", async function() {
     this.beforeEach(async function() {
-      this.loan = await this.Loan.deploy(120, 5);
+      const usdc = await this.USDC.deploy();
+      await usdc.deployed();
+      this.loan = await this.Loan.deploy(120, 5, usdc.address);
       await this.loan.deployed();
     });
 
@@ -89,7 +99,7 @@ describe("Loan", function () {
   });
 
   context("Deposit money to contract", async function() {
-    it.only ("User can deposit money to Loan contract", async function() {
+    it ("User can deposit money to Loan contract", async function() {
       this.usdc = await this.USDC.deploy();
       await this.usdc.deployed();
       this.loan = await this.Loan.deploy(120, 5, this.usdc.address);
