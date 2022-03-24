@@ -21,6 +21,7 @@ contract Loan {
 
     uint256 public length;
     uint256 public interest;
+    uint256 public balance;
 
     uint256[] public pendingLoanIds;
     mapping(uint256 => LoanAgreement) public pendingLoans;
@@ -50,5 +51,6 @@ contract Loan {
 
     function deposit(uint256 _amount) external payable {
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
+        balance += _amount;
     }
 }
