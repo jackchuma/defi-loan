@@ -89,14 +89,14 @@ describe("Loan", function () {
   });
 
   context("Deposit money to contract", async function() {
-    it.only("Test function", async function() {
+    it.only ("User can deposit money to Loan contract", async function() {
       this.usdc = await this.USDC.deploy();
       await this.usdc.deployed();
       this.loan = await this.Loan.deploy(120, 5, this.usdc.address);
       await this.loan.deployed();
       await this.usdc.approve(this.loan.address, 1000000);
       await this.loan.connect(this.owner).deposit(1000000);
-      console.log((await this.usdc.balanceOf(this.loan.address)).toNumber());
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(1000000);
     });
   });
 });
