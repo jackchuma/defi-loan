@@ -25,8 +25,12 @@ describe("Loan", function () {
       expect((await loan.interest()).toNumber()).to.equal(5);
     });
 
-    xit ("Should save usdc address on deployment", async function() {
-
+    it ("Should save usdc address on deployment", async function() {
+      const usdc = await this.USDC.deploy();
+      await usdc.deployed();
+      const loan = await this.Loan.deploy(120, 5, usdc.address);
+      await loan.deployed();
+      expect(await loan.usdc()).to.equal(usdc.address);
     });
   });
 

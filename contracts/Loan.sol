@@ -15,7 +15,7 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 contract Loan {
     using Counters for Counters.Counter;
 
-    address private usdc;
+    address public usdc;
 
     Counters.Counter public idCount;
 
