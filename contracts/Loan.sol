@@ -42,6 +42,7 @@ contract Loan {
         uint256 _upAmount = _amount * 5 / 4;
         require(_upAmount <= stakedBalances[msg.sender], "Not enough staked");
         stakedBalances[msg.sender] -= _upAmount;
+        userBalances[msg.sender] -= _amount;
         IERC20(usdc).transfer(msg.sender, _amount);
     }
 }

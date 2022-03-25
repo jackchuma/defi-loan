@@ -170,5 +170,11 @@ describe("Loan", function () {
       await this.loan.connect(this.alice).borrow(800000);
       expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(0);
     });
+
+    it ("Borrow function will update userBalances", async function() {
+      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(1000000);
+      await this.loan.connect(this.alice).borrow(800000);
+      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(200000);
+    });
   });
 });
