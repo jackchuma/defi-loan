@@ -193,5 +193,16 @@ describe("Loan", function () {
       await this.loan.connect(this.owner).withdraw(1000000);
       expect((await this.loan.balance()).toNumber()).to.equal(3000000);
     });
+
+    it ("Contract keeps track of user balances after withdraw", async function() {
+      await this.loan.connect(this.owner).withdraw(1000000);
+      expect((await this.loan.userBalances(this.owner.address)).toNumber()).to.equal(0);
+      await this.loan.connect(this.alice).withdraw(458639);
+      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(1000000 - 458639);
+      await this.loan.connect(this.bob).withdraw(248564);
+      expect((await this.loan.userBalances(this.bob.address)).toNumber()).to.equal(1000000 - 248564);
+      await this.loan.connect(this.carol).withdraw(948563);
+      expect((await this.loan.userBalances(this.carol.address)).toNumber()).to.equal(1000000 - 948563);
+    });
   });
 });

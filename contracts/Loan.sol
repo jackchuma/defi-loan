@@ -60,6 +60,7 @@ contract Loan {
         uint256 _bal = userBalances[msg.sender];
         require(_amount <= _bal, "Nope");
         balance -= _amount;
+        userBalances[msg.sender] -= _amount;
         IERC20(usdc).transfer(msg.sender, _amount);
     }
 }
