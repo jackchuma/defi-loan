@@ -224,5 +224,9 @@ describe("Loan", function () {
       await this.loan.connect(this.alice).borrow(100);
       await this.loan.connect(this.alice).pay(100);
     });
+
+    it ("Users can only call pay function if they owe money", async function() {
+      await expect(this.loan.connect(this.carol).pay(100)).to.be.revertedWith("No money owed");
+    });
   });
 });
