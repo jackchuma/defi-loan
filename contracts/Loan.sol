@@ -50,6 +50,7 @@ contract Loan {
         IERC20(usdc).transfer(msg.sender, _amount);
     }
 
+    // what if amount is greater than amount owed
     function pay(uint256 _amount) external {
 
     }
