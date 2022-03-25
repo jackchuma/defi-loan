@@ -153,5 +153,10 @@ describe("Loan", function () {
     it ("Only users who have staked money can call borrow function", async function() {
       await expect(this.loan.connect(this.carol).borrow(1000)).to.be.revertedWith("Not enough staked");
     });
+
+    it ("Users can borrow up to 80% of their staked balance", async function() {
+      await expect(this.loan.connect(this.alice).borrow(800001)).to.be.revertedWith("Not enough staked");
+      await this.loan.connect(this.alice).borrow(800000);
+    });
   });
 });
