@@ -248,5 +248,11 @@ describe("Loan", function () {
     it ("Cannot pay more than amount owed", async function() {
       await expect(this.loan.connect(this.alice).pay(200)).to.be.revertedWith("More than amount owed");
     });
+
+    it ("Pay function updates userBalances", async function() {
+      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(900);
+      await this.loan.connect(this.alice).pay(50);
+      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(945);
+    });
   });
 });

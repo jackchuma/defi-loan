@@ -14,7 +14,7 @@ contract Loan {
     uint256 public balance;
 
     mapping(address => uint256) public stakedBalances; // address values to check how much can be borrowed (80% of this value can be borrowed)
-    mapping(address => uint256) public userBalances; // total balance of user available to withdraw
+    mapping(address => uint256) public userBalances; // user's total balance
     mapping(address => uint256) public amountOwed; // total amount each address owes to contract
 
     constructor(address _usdc) {
@@ -47,12 +47,12 @@ contract Loan {
         IERC20(usdc).transfer(msg.sender, _amount);
     }
 
-    // what if amount is greater than amount owed
     function pay(uint256 _amount) external {
         require(amountOwed[msg.sender] > 0, "No money owed");
         require(_amount <= amountOwed[msg.sender], "More than amount owed");
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
         balance += _amount;
         amountOwed[msg.sender] -= _amount;
+        userBalances[msg.sender] += (_amount * 9 / 10);
     }
 }
