@@ -57,6 +57,8 @@ contract Loan {
     }
 
     function withdraw(uint256 _amount) external {
+        uint256 _bal = userBalances[msg.sender];
+        require(_amount <= _bal, "Nope");
         IERC20(usdc).transfer(msg.sender, _amount);
     }
 }

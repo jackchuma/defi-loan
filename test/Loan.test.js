@@ -183,5 +183,9 @@ describe("Loan", function () {
       expect((await this.usdc.balanceOf(this.carol.address)).toNumber()).to.equal(1000000);
       expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(0);
     });
+
+    it ("Cannot withdraw more money than user's balance", async function() {
+      await expect(this.loan.connect(this.alice).withdraw(1000001)).to.be.revertedWith('Nope');
+    });
   });
 });
