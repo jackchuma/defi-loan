@@ -42,6 +42,7 @@ contract Loan {
     function borrow(uint256 _amount) external {
         uint256 _upAmount = _amount * 5 / 4;
         require(_upAmount <= stakedBalances[msg.sender], "Not enough staked");
+        balance -= _amount;
         stakedBalances[msg.sender] -= _upAmount;
         userBalances[msg.sender] -= _amount;
         amountOwed[msg.sender] += _amount;
