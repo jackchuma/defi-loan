@@ -228,5 +228,12 @@ describe("Loan", function () {
     it ("Users can only call pay function if they owe money", async function() {
       await expect(this.loan.connect(this.carol).pay(100)).to.be.revertedWith("No money owed");
     });
+
+    it ("Pay function transfers tokens to contract", async function() {
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(3000);
+      await this.loan.connect(this.alice).borrow(100);
+      await this.loan.connect(this.alice).pay(50);
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(2950);
+    });
   });
 });

@@ -53,5 +53,6 @@ contract Loan {
     // what if amount is greater than amount owed
     function pay(uint256 _amount) external {
         require(amountOwed[msg.sender] > 0, "No money owed");
+        IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
     }
 }
