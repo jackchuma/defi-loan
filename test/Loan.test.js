@@ -121,4 +121,27 @@ describe("Loan", function () {
       expect((await this.loan.userBalances(this.carol.address)).toNumber()).to.equal(1000000 - 948563);
     });
   });
+
+  context("Borrow Money", async function() {
+    this.beforeEach(async function() {
+      this.usdc = await this.USDC.deploy();
+      await this.usdc.deployed();
+      this.loan = await this.Loan.deploy(this.usdc.address);
+      await this.loan.deployed();
+      await this.usdc.connect(this.owner).mint(this.alice.address, 1000000);
+      await this.usdc.connect(this.owner).mint(this.bob.address, 1000000);
+      await this.usdc.connect(this.owner).mint(this.carol.address, 1000000);
+      await this.usdc.connect(this.owner).approve(this.loan.address, 1000000);
+      await this.usdc.connect(this.alice).approve(this.loan.address, 1000000);
+      await this.usdc.connect(this.bob).approve(this.loan.address, 1000000);
+      await this.usdc.connect(this.carol).approve(this.loan.address, 1000000);
+      await this.loan.connect(this.owner).deposit(1000000);
+      await this.loan.connect(this.alice).deposit(1000000);
+      await this.loan.connect(this.bob).deposit(1000000);
+    });
+
+    it ("Users can call borrow function", async function() {
+      await this.loan.connect(this.alice).borrow(1000);
+    });
+  });
 });

@@ -16,7 +16,9 @@ contract Loan {
     address public usdc;
     uint256 public balance;
 
-    mapping(address => uint256) public userBalances;
+    mapping(address => uint256) public stakedBalances; // address values to check how much can be borrowed (80% of this value can be borrowed)
+    mapping(address => uint256) public userBalances; // total balance of user available to withdraw
+    mapping(address => uint256) public amountOwed; // total amount each address owes to contract
 
     constructor(address _usdc) {
         usdc = _usdc;
