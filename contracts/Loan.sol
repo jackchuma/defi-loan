@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 /*
@@ -13,41 +12,14 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 */
 
 contract Loan {
-    using Counters for Counters.Counter;
 
     address public usdc;
-
-    Counters.Counter public idCount;
-
-    uint256 public length;
-    uint256 public interest;
     uint256 public balance;
 
-    uint256[] public pendingLoanIds;
-    mapping(uint256 => LoanAgreement) public pendingLoans;
     mapping(address => uint256) public userBalances;
 
-    struct LoanAgreement {
-        uint256 id;
-        address requestor;
-        uint256 amount;
-    }
-
-    constructor(uint256 _length, uint256 _interest, address _usdc) {
-        length = _length;
-        interest = _interest;
+    constructor(address _usdc) {
         usdc = _usdc;
-    }
-
-    // TODO: Don't allow another loan request if msg.sender has pending loan
-    function requestLoan(uint256 _amount) external {
-        uint256 _id = idCount.current();
-        LoanAgreement storage _loan = pendingLoans[_id];
-        _loan.id = _id;
-        pendingLoanIds.push(_id);
-        _loan.requestor = msg.sender;
-        _loan.amount = _amount;
-        idCount.increment();
     }
 
     function deposit(uint256 _amount) external {
@@ -57,10 +29,13 @@ contract Loan {
     }
 
     function withdraw(uint256 _amount) external {
-        uint256 _bal = userBalances[msg.sender];
-        require(_amount <= _bal, "Nope");
+        require(_amount <= userBalances[msg.sender], "Nope");
         balance -= _amount;
         userBalances[msg.sender] -= _amount;
         IERC20(usdc).transfer(msg.sender, _amount);
+    }
+
+    function borrow(uint256 _amount) external {
+
     }
 }
