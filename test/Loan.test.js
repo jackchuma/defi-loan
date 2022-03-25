@@ -150,8 +150,8 @@ describe("Loan", function () {
       await this.loan.connect(this.alice).borrow(1000);
     });
 
-    xit ("Only users who have staked money can call borrow function", async function() {
-      await expect(this.loan.connect(this.alice).borrow(1000)).to.be.revertedWith("Not enough staked");
+    it ("Only users who have staked money can call borrow function", async function() {
+      await expect(this.loan.connect(this.carol).borrow(1000)).to.be.revertedWith("Not enough staked");
     });
   });
 });
