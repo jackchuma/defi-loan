@@ -28,6 +28,7 @@ contract Loan {
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
         balance += _amount;
         userBalances[msg.sender] += _amount;
+        stakedBalances[msg.sender] += _amount;
     }
 
     function withdraw(uint256 _amount) external {
@@ -38,6 +39,6 @@ contract Loan {
     }
 
     function borrow(uint256 _amount) external {
-
+        require(_amount * 5 / 4 <= stakedBalances[msg.sender], "Not enough staked");
     }
 }

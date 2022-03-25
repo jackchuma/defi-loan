@@ -60,6 +60,12 @@ describe("Loan", function () {
       await this.loan.connect(this.carol).deposit(948563);
       expect((await this.loan.userBalances(this.carol.address)).toNumber()).to.equal(948563);
     });
+
+    it ("Contract keeps track of staked balances", async function() {
+      expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(0);
+      await this.loan.connect(this.owner).deposit(1000000);
+      expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(1000000);
+    });
   });
 
   context("Withdraw money from contract", async function() {
@@ -142,6 +148,10 @@ describe("Loan", function () {
 
     it ("Users can call borrow function", async function() {
       await this.loan.connect(this.alice).borrow(1000);
+    });
+
+    xit ("Only users who have staked money can call borrow function", async function() {
+      await expect(this.loan.connect(this.alice).borrow(1000)).to.be.revertedWith("Not enough staked");
     });
   });
 });
