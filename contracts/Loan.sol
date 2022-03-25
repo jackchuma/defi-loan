@@ -25,6 +25,7 @@ contract Loan {
     }
 
     function deposit(uint256 _amount) external {
+        require(amountOwed[msg.sender] == 0, "Must pay amount owed");
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
         balance += _amount;
         userBalances[msg.sender] += _amount;

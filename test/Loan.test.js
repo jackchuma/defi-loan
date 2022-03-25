@@ -67,6 +67,12 @@ describe("Loan", function () {
       await this.loan.connect(this.owner).deposit(1000000);
       expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(1000000);
     });
+
+    it ("Cannot deposit if money owed", async function() {
+      await this.loan.connect(this.alice).deposit(500);
+      await this.loan.connect(this.alice).borrow(100);
+      await expect(this.loan.connect(this.alice).deposit(100)).to.be.revertedWith('Must pay amount owed');
+    });
   });
 
   context("Withdraw money from contract", async function() {
