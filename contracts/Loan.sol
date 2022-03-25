@@ -5,10 +5,7 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 /*
- * Smart contract to facilitate a DeFi loan
- * 
- * This is meant to be a single type of loan (i.e. loans of a fixed length)
- * Have lenders deposit money into the smart contract to earn interest
+ * Smart contract to facilitate peer to peer lending
 */
 
 contract Loan {
@@ -55,5 +52,6 @@ contract Loan {
         require(amountOwed[msg.sender] > 0, "No money owed");
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
         balance += _amount;
+        amountOwed[msg.sender] -= _amount;
     }
 }
