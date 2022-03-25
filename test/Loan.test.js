@@ -158,5 +158,11 @@ describe("Loan", function () {
       await expect(this.loan.connect(this.alice).borrow(800001)).to.be.revertedWith("Not enough staked");
       await this.loan.connect(this.alice).borrow(800000);
     });
+
+    it ("Completion of borrow function will transfer money to user", async function() {
+      expect((await this.usdc.balanceOf(this.alice.address)).toNumber()).to.equal(0);
+      await this.loan.connect(this.alice).borrow(800000);
+      expect((await this.usdc.balanceOf(this.alice.address)).toNumber()).to.equal(800000);
+    });
   });
 });

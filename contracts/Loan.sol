@@ -40,5 +40,6 @@ contract Loan {
 
     function borrow(uint256 _amount) external {
         require(_amount * 5 / 4 <= stakedBalances[msg.sender], "Not enough staked");
+        IERC20(usdc).transfer(msg.sender, _amount);
     }
 }
