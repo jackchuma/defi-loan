@@ -51,11 +51,12 @@ contract Loan {
 
     function pay(uint256 _amount) external {
         require(amountOwed[msg.sender] > 0, "No money owed");
-        require(_amount <= amountOwed[msg.sender], "More than amount owed");
+        uint256 _totalOwed = amountOwed[msg.sender] + feeOwed[msg.sender];
+        require(_amount <= _totalOwed, "More than amount owed");
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
         balance += _amount;
         if (feeOwed[msg.sender] > 0) {
-            uint256 _leftOver = _payFee(_amount);
+            _payFee(_amount);
         }
         // amountOwed[msg.sender] -= _amount;
         userBalances[msg.sender] += (_amount * 9 / 10);
@@ -64,9 +65,13 @@ contract Loan {
         }
     }
 
-    function _payFee(uint256 _amount) private returns (uint256) {
-        uint256 _toPay = _amount <= feeOwed[msg.sender] ? _amount : feeOwed[msg.sender];
-        feeOwed[msg.sender] -= _toPay;
-        return _amount - _toPay;
+    function _payFee(uint256 _amount) private {
+        if (_amount <= feeOwed[msg.sender]) {
+            feeOwed[msg.sender] -= _amount;
+        } else {
+            uint256 _leftOver = _amount - feeOwed[msg.sender];
+            feeOwed[msg.sender] = 0;
+            amountOwed[msg.sender] -= _leftOver;
+        }
     }
 }

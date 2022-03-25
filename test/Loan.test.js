@@ -261,6 +261,14 @@ describe("Loan", function () {
       expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(100);
     });
 
+    it ("Proper updates when payment made that exceeds fees owed but not total owed", async function() {
+      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(10);
+      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(100);
+      await this.loan.connect(this.alice).pay(50);
+      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(0);
+      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(60);
+    });
+
     it ("Cannot pay more than amount owed", async function() {
       await expect(this.loan.connect(this.alice).pay(200)).to.be.revertedWith("More than amount owed");
     });
