@@ -245,10 +245,10 @@ describe("Loan", function () {
       expect((await this.loan.balance()).toNumber()).to.equal(950);
     });
 
-    it ("Pay function updates amountOwed", async function() {
-      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(110);
-      await this.loan.connect(this.alice).pay(50);
-      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(60);
+    it ("Pay function updates feeOwed", async function() {
+      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(10);
+      await this.loan.connect(this.alice).pay(5);
+      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(5);
     });
 
     it ("Cannot pay more than amount owed", async function() {
