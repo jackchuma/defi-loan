@@ -215,13 +215,11 @@ describe("Loan", function () {
       await this.usdc.connect(this.alice).approve(this.loan.address, 1000000);
       await this.usdc.connect(this.bob).approve(this.loan.address, 1000000);
       await this.usdc.connect(this.carol).approve(this.loan.address, 1000000);
-      await this.loan.connect(this.owner).deposit(1000);
       await this.loan.connect(this.alice).deposit(1000);
-      await this.loan.connect(this.bob).deposit(1000);
+      await this.loan.connect(this.alice).borrow(100);
     });
 
     it ("Users can call pay function", async function() {
-      await this.loan.connect(this.alice).borrow(100);
       await this.loan.connect(this.alice).pay(100);
     });
 
@@ -230,10 +228,15 @@ describe("Loan", function () {
     });
 
     it ("Pay function transfers tokens to contract", async function() {
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(3000);
-      await this.loan.connect(this.alice).borrow(100);
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(900);
       await this.loan.connect(this.alice).pay(50);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(2950);
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(950);
+    });
+
+    it ("Pay function updates contract balance", async function() {
+      expect((await this.loan.balance()).toNumber()).to.equal(900);
+      await this.loan.connect(this.alice).pay(50);
+      expect((await this.loan.balance()).toNumber()).to.equal(950);
     });
   });
 });
