@@ -45,7 +45,11 @@ contract Loan {
         balance -= _amount;
         stakedBalances[msg.sender] -= _upAmount;
         userBalances[msg.sender] -= _amount;
-        amountOwed[msg.sender] += _amount;
+        amountOwed[msg.sender] += (_amount * 11 / 10);
         IERC20(usdc).transfer(msg.sender, _amount);
+    }
+
+    function pay(uint256 _amount) external {
+
     }
 }
