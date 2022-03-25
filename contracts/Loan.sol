@@ -50,7 +50,7 @@ contract Loan {
         idCount.increment();
     }
 
-    function deposit(uint256 _amount) external payable {
+    function deposit(uint256 _amount) external {
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
         balance += _amount;
         userBalances[msg.sender] += _amount;
