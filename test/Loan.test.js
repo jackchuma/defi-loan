@@ -129,6 +129,7 @@ describe("Loan", function () {
     });
 
     it ("Contract balance is updated from deposit", async function() {
+      expect((await this.loan.balance()).toNumber()).to.equal(0);
       await this.loan.connect(this.owner).deposit(1000000);
       expect((await this.loan.balance()).toNumber()).to.equal(1000000);
     });
@@ -136,6 +137,12 @@ describe("Loan", function () {
     it ("Contract keeps track of user balances", async function() {
       await this.loan.connect(this.owner).deposit(1000000);
       expect((await this.loan.userBalances(this.owner.address)).toNumber()).to.equal(1000000);
+      await this.loan.connect(this.alice).deposit(458639);
+      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(458639);
+      await this.loan.connect(this.bob).deposit(248564);
+      expect((await this.loan.userBalances(this.bob.address)).toNumber()).to.equal(248564);
+      await this.loan.connect(this.carol).deposit(948563);
+      expect((await this.loan.userBalances(this.carol.address)).toNumber()).to.equal(948563);
     });
   });
 });
