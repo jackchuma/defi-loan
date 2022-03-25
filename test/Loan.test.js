@@ -279,6 +279,13 @@ describe("Loan", function () {
       expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(940);
     });
 
+    it ("Pay function updates userBalances when no fee owed", async function() {
+      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(900);
+      await this.loan.connect(this.alice).pay(10);
+      await this.loan.connect(this.alice).pay(50);
+      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(950);
+    });
+
     it ("If user pays off full balance, stakedBalances is updated", async function() {
       expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(875);
       await this.loan.connect(this.alice).pay(110);
