@@ -145,4 +145,43 @@ describe("Loan", function () {
       expect((await this.loan.userBalances(this.carol.address)).toNumber()).to.equal(948563);
     });
   });
+
+  context("Withdraw money from contract", async function() {
+    this.beforeEach(async function() {
+      this.usdc = await this.USDC.deploy();
+      await this.usdc.deployed();
+      this.loan = await this.Loan.deploy(120, 5, this.usdc.address);
+      await this.loan.deployed();
+      await this.usdc.connect(this.owner).mint(this.alice.address, 1000000);
+      await this.usdc.connect(this.owner).mint(this.bob.address, 1000000);
+      await this.usdc.connect(this.owner).mint(this.carol.address, 1000000);
+      await this.usdc.connect(this.owner).approve(this.loan.address, 1000000);
+      await this.usdc.connect(this.alice).approve(this.loan.address, 1000000);
+      await this.usdc.connect(this.bob).approve(this.loan.address, 1000000);
+      await this.usdc.connect(this.carol).approve(this.loan.address, 1000000);
+      await this.loan.connect(this.owner).deposit(1000000);
+      await this.loan.connect(this.alice).deposit(1000000);
+      await this.loan.connect(this.bob).deposit(1000000);
+      await this.loan.connect(this.carol).deposit(1000000);
+    });
+
+    it ("Users can withdraw money from contract", async function() {
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(4000000);
+      await this.loan.connect(this.owner).withdraw(1000000);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.owner.address)))).to.equal(1000000);
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(3000000);
+
+      await this.loan.connect(this.alice).withdraw(1000000);
+      expect((await this.usdc.balanceOf(this.alice.address)).toNumber()).to.equal(1000000);
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(2000000);
+
+      await this.loan.connect(this.bob).withdraw(1000000);
+      expect((await this.usdc.balanceOf(this.bob.address)).toNumber()).to.equal(1000000);
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(1000000);
+
+      await this.loan.connect(this.carol).withdraw(1000000);
+      expect((await this.usdc.balanceOf(this.carol.address)).toNumber()).to.equal(1000000);
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(0);
+    });
+  });
 });

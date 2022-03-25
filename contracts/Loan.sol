@@ -55,4 +55,8 @@ contract Loan {
         balance += _amount;
         userBalances[msg.sender] += _amount;
     }
+
+    function withdraw(uint256 _amount) external {
+        IERC20(usdc).transfer(msg.sender, _amount);
+    }
 }
