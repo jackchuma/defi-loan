@@ -1,4 +1,5 @@
 const { expect } = require("chai");
+const { keccak256 } = require("ethers/lib/utils");
 const { ethers } = require("hardhat");
 
 describe("Loan", function () {
@@ -125,6 +126,11 @@ describe("Loan", function () {
       expect((await this.loan.userBalances(this.bob.address)).toNumber()).to.equal(1000000 - 248564);
       await this.loan.connect(this.carol).withdraw(948563);
       expect((await this.loan.userBalances(this.carol.address)).toNumber()).to.equal(1000000 - 948563);
+    });
+
+    it ("User can only withdraw if no money is owed", async function() {
+      await this.loan.connect(this.alice).borrow(800000);
+      await expect(this.loan.connect(this.alice).withdraw(1)).to.be.revertedWith("Must pay amount owed");
     });
   });
 

@@ -32,6 +32,7 @@ contract Loan {
     }
 
     function withdraw(uint256 _amount) external {
+        require(amountOwed[msg.sender] == 0, "Must pay amount owed");
         require(_amount <= userBalances[msg.sender], "Nope");
         balance -= _amount;
         userBalances[msg.sender] -= _amount;
