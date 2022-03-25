@@ -15,7 +15,8 @@ contract Loan {
 
     mapping(address => uint256) public stakedBalances; // address values to check how much can be borrowed (80% of this value can be borrowed)
     mapping(address => uint256) public userBalances; // user's total balance
-    mapping(address => uint256) public amountOwed; // total amount each address owes to contract
+    mapping(address => uint256) public amountOwed; // principal amount each address owes to contract
+    mapping(address => uint256) public feeOwed; // Interest owed before principal is payed down
 
     constructor(address _usdc) {
         usdc = _usdc;
@@ -43,7 +44,8 @@ contract Loan {
         balance -= _amount;
         stakedBalances[msg.sender] -= _upAmount;
         userBalances[msg.sender] -= _amount;
-        amountOwed[msg.sender] += (_amount * 11 / 10);
+        amountOwed[msg.sender] += _amount;
+        feeOwed[msg.sender] += (_amount / 10);
         IERC20(usdc).transfer(msg.sender, _amount);
     }
 
@@ -54,5 +56,8 @@ contract Loan {
         balance += _amount;
         amountOwed[msg.sender] -= _amount;
         userBalances[msg.sender] += (_amount * 9 / 10);
+        if (amountOwed[msg.sender] == 0) {
+            stakedBalances[msg.sender] = userBalances[msg.sender];
+        }
     }
 }

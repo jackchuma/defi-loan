@@ -192,7 +192,13 @@ describe("Loan", function () {
     it ("Borrow function will update amountOwed", async function() {
       expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(0);
       await this.loan.connect(this.alice).borrow(800000);
-      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(880000);
+      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(800000);
+    });
+
+    it ("Borrow function will update feeOwed", async function() {
+      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(0);
+      await this.loan.connect(this.alice).borrow(800000);
+      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(80000);
     });
 
     it ("Borrow function will update contract balance", async function() {
@@ -253,6 +259,12 @@ describe("Loan", function () {
       expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(900);
       await this.loan.connect(this.alice).pay(50);
       expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(945);
+    });
+
+    xit ("If user pays off full balance, stakedBalances is updated", async function() {
+      expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(875);
+      await this.loan.connect(this.alice).pay(110);
+      expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(1000);
     });
   });
 });
