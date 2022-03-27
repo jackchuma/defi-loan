@@ -118,9 +118,9 @@ describe("Loan", function () {
     });
 
     it ("Contract balance is updated from withdraw", async function() {
-      expect((await this.loan.balance()).toNumber()).to.equal(4000000);
+      expect(parseInt(ethers.utils.formatEther(await this.loan.balance()))).to.equal(4000000);
       await this.loan.connect(this.owner).withdraw(this.val);
-      expect((await this.loan.balance()).toNumber()).to.equal(3000000);
+      expect(parseInt(ethers.utils.formatEther(await this.loan.balance()))).to.equal(3000000);
     });
 
     it ("Contract keeps track of user balances after withdraw", async function() {
