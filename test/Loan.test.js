@@ -48,7 +48,7 @@ describe("Loan", function () {
     it ("Contract balance is updated from deposit", async function() {
       expect((await this.loan.balance()).toNumber()).to.equal(0);
       await this.loan.connect(this.owner).deposit(this.val);
-      expect((await this.loan.balance()).toNumber()).to.equal(this.val);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(1000000);
     });
 
     it ("Contract keeps track of user balances", async function() {
