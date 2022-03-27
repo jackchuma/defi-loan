@@ -114,7 +114,7 @@ describe("Loan", function () {
     });
 
     it ("Cannot withdraw more money than user's balance", async function() {
-      await expect(this.loan.connect(this.alice).withdraw(1000001)).to.be.revertedWith('Nope');
+      await expect(this.loan.connect(this.alice).withdraw(this.val.add(1))).to.be.revertedWith('Nope');
     });
 
     it ("Contract balance is updated from withdraw", async function() {
