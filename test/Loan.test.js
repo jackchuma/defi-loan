@@ -126,12 +126,12 @@ describe("Loan", function () {
     it ("Contract keeps track of user balances after withdraw", async function() {
       await this.loan.connect(this.owner).withdraw(this.val);
       expect((await this.loan.userBalances(this.owner.address)).toNumber()).to.equal(0);
-      await this.loan.connect(this.alice).withdraw(458639);
-      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(this.val - 458639);
-      await this.loan.connect(this.bob).withdraw(248564);
-      expect((await this.loan.userBalances(this.bob.address)).toNumber()).to.equal(this.val - 248564);
-      await this.loan.connect(this.carol).withdraw(948563);
-      expect((await this.loan.userBalances(this.carol.address)).toNumber()).to.equal(this.val - 948563);
+      await this.loan.connect(this.alice).withdraw(ethers.utils.parseEther("458639"));
+      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.alice.address)))).to.equal(1000000 - 458639);
+      await this.loan.connect(this.bob).withdraw(ethers.utils.parseEther("248564"));
+      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.bob.address)))).to.equal(1000000 - 248564);
+      await this.loan.connect(this.carol).withdraw(ethers.utils.parseEther("948563"));
+      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.carol.address)))).to.equal(1000000 - 948563);
     });
 
     it ("User can only withdraw if no money is owed", async function() {
