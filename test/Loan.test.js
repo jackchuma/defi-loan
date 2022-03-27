@@ -95,22 +95,22 @@ describe("Loan", function () {
     });
 
     it ("Users can withdraw money from contract", async function() {
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(4000000);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(4000000);
       await this.loan.connect(this.owner).withdraw(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.owner.address)))).to.equal(this.val);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(3000000);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.owner.address)))).to.equal(1000000);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(3000000);
 
       await this.loan.connect(this.alice).withdraw(this.val);
-      expect((await this.usdc.balanceOf(this.alice.address)).toNumber()).to.equal(this.val);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(2000000);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.alice.address)))).to.equal(1000000);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(2000000);
 
       await this.loan.connect(this.bob).withdraw(this.val);
-      expect((await this.usdc.balanceOf(this.bob.address)).toNumber()).to.equal(this.val);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(this.val);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.bob.address)))).to.equal(1000000);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(1000000);
 
       await this.loan.connect(this.carol).withdraw(this.val);
-      expect((await this.usdc.balanceOf(this.carol.address)).toNumber()).to.equal(this.val);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(0);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.carol.address)))).to.equal(1000000);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(0);
     });
 
     it ("Cannot withdraw more money than user's balance", async function() {
