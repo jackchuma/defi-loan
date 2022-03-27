@@ -184,9 +184,9 @@ describe("Loan", function () {
     });
 
     it ("Borrow function will update userBalances", async function() {
-      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(this.val);
-      await this.loan.connect(this.alice).borrow(800000);
-      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(200000);
+      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.alice.address)))).to.equal(1000000);
+      await this.loan.connect(this.alice).borrow(ethers.utils.parseEther("800000"));
+      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.alice.address)))).to.equal(200000);
     });
 
     it ("Borrow function will update amountOwed", async function() {
