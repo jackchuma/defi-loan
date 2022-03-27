@@ -53,7 +53,7 @@ describe("Loan", function () {
 
     it ("Contract keeps track of user balances", async function() {
       await this.loan.connect(this.owner).deposit(this.val);
-      expect((await this.loan.userBalances(this.owner.address)).toNumber()).to.equal(this.val);
+      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.owner.address)))).to.equal(1000000);
       await this.loan.connect(this.alice).deposit(458639);
       expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(458639);
       await this.loan.connect(this.bob).deposit(248564);
