@@ -1,5 +1,4 @@
 const { expect } = require("chai");
-const { keccak256 } = require("ethers/lib/utils");
 const { ethers } = require("hardhat");
 
 describe("Loan", function () {
@@ -7,6 +6,7 @@ describe("Loan", function () {
     this.Loan = await ethers.getContractFactory("Loan");
     this.USDC = await ethers.getContractFactory("USDC");
     [this.owner, this.alice, this.bob, this.carol] = await ethers.getSigners();
+    this.val = ethers.utils.parseEther("1000000");
   });
 
   context("Deployment", async function() {
@@ -25,35 +25,35 @@ describe("Loan", function () {
       await this.usdc.deployed();
       this.loan = await this.Loan.deploy(this.usdc.address);
       await this.loan.deployed();
-      await this.usdc.connect(this.owner).mint(this.alice.address, 1000000);
-      await this.usdc.connect(this.owner).mint(this.bob.address, 1000000);
-      await this.usdc.connect(this.owner).mint(this.carol.address, 1000000);
-      await this.usdc.connect(this.owner).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.alice).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.bob).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.carol).approve(this.loan.address, 1000000);
+      await this.usdc.connect(this.owner).mint(this.alice.address, this.val);
+      await this.usdc.connect(this.owner).mint(this.bob.address, this.val);
+      await this.usdc.connect(this.owner).mint(this.carol.address, this.val);
+      await this.usdc.connect(this.owner).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.alice).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.bob).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.carol).approve(this.loan.address, this.val);
     });
 
     it ("Users can deposit money to Loan contract", async function() {
-      await this.loan.connect(this.owner).deposit(1000000);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(1000000);
-      await this.loan.connect(this.alice).deposit(1000000);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(2000000);
-      await this.loan.connect(this.bob).deposit(1000000);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(3000000);
-      await this.loan.connect(this.carol).deposit(1000000);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(4000000);
+      await this.loan.connect(this.owner).deposit(this.val);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(1000000);
+      await this.loan.connect(this.alice).deposit(this.val);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(2000000);
+      await this.loan.connect(this.bob).deposit(this.val);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(3000000);
+      await this.loan.connect(this.carol).deposit(this.val);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(4000000);
     });
 
     it ("Contract balance is updated from deposit", async function() {
       expect((await this.loan.balance()).toNumber()).to.equal(0);
-      await this.loan.connect(this.owner).deposit(1000000);
-      expect((await this.loan.balance()).toNumber()).to.equal(1000000);
+      await this.loan.connect(this.owner).deposit(this.val);
+      expect((await this.loan.balance()).toNumber()).to.equal(this.val);
     });
 
     it ("Contract keeps track of user balances", async function() {
-      await this.loan.connect(this.owner).deposit(1000000);
-      expect((await this.loan.userBalances(this.owner.address)).toNumber()).to.equal(1000000);
+      await this.loan.connect(this.owner).deposit(this.val);
+      expect((await this.loan.userBalances(this.owner.address)).toNumber()).to.equal(this.val);
       await this.loan.connect(this.alice).deposit(458639);
       expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(458639);
       await this.loan.connect(this.bob).deposit(248564);
@@ -64,8 +64,8 @@ describe("Loan", function () {
 
     it ("Contract keeps track of staked balances", async function() {
       expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(0);
-      await this.loan.connect(this.owner).deposit(1000000);
-      expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(1000000);
+      await this.loan.connect(this.owner).deposit(this.val);
+      expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(this.val);
     });
 
     it ("Cannot deposit if money owed", async function() {
@@ -81,35 +81,35 @@ describe("Loan", function () {
       await this.usdc.deployed();
       this.loan = await this.Loan.deploy(this.usdc.address);
       await this.loan.deployed();
-      await this.usdc.connect(this.owner).mint(this.alice.address, 1000000);
-      await this.usdc.connect(this.owner).mint(this.bob.address, 1000000);
-      await this.usdc.connect(this.owner).mint(this.carol.address, 1000000);
-      await this.usdc.connect(this.owner).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.alice).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.bob).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.carol).approve(this.loan.address, 1000000);
-      await this.loan.connect(this.owner).deposit(1000000);
-      await this.loan.connect(this.alice).deposit(1000000);
-      await this.loan.connect(this.bob).deposit(1000000);
-      await this.loan.connect(this.carol).deposit(1000000);
+      await this.usdc.connect(this.owner).mint(this.alice.address, this.val);
+      await this.usdc.connect(this.owner).mint(this.bob.address, this.val);
+      await this.usdc.connect(this.owner).mint(this.carol.address, this.val);
+      await this.usdc.connect(this.owner).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.alice).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.bob).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.carol).approve(this.loan.address, this.val);
+      await this.loan.connect(this.owner).deposit(this.val);
+      await this.loan.connect(this.alice).deposit(this.val);
+      await this.loan.connect(this.bob).deposit(this.val);
+      await this.loan.connect(this.carol).deposit(this.val);
     });
 
     it ("Users can withdraw money from contract", async function() {
       expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(4000000);
-      await this.loan.connect(this.owner).withdraw(1000000);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.owner.address)))).to.equal(1000000);
+      await this.loan.connect(this.owner).withdraw(this.val);
+      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.owner.address)))).to.equal(this.val);
       expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(3000000);
 
-      await this.loan.connect(this.alice).withdraw(1000000);
-      expect((await this.usdc.balanceOf(this.alice.address)).toNumber()).to.equal(1000000);
+      await this.loan.connect(this.alice).withdraw(this.val);
+      expect((await this.usdc.balanceOf(this.alice.address)).toNumber()).to.equal(this.val);
       expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(2000000);
 
-      await this.loan.connect(this.bob).withdraw(1000000);
-      expect((await this.usdc.balanceOf(this.bob.address)).toNumber()).to.equal(1000000);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(1000000);
+      await this.loan.connect(this.bob).withdraw(this.val);
+      expect((await this.usdc.balanceOf(this.bob.address)).toNumber()).to.equal(this.val);
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(this.val);
 
-      await this.loan.connect(this.carol).withdraw(1000000);
-      expect((await this.usdc.balanceOf(this.carol.address)).toNumber()).to.equal(1000000);
+      await this.loan.connect(this.carol).withdraw(this.val);
+      expect((await this.usdc.balanceOf(this.carol.address)).toNumber()).to.equal(this.val);
       expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(0);
     });
 
@@ -119,19 +119,19 @@ describe("Loan", function () {
 
     it ("Contract balance is updated from withdraw", async function() {
       expect((await this.loan.balance()).toNumber()).to.equal(4000000);
-      await this.loan.connect(this.owner).withdraw(1000000);
+      await this.loan.connect(this.owner).withdraw(this.val);
       expect((await this.loan.balance()).toNumber()).to.equal(3000000);
     });
 
     it ("Contract keeps track of user balances after withdraw", async function() {
-      await this.loan.connect(this.owner).withdraw(1000000);
+      await this.loan.connect(this.owner).withdraw(this.val);
       expect((await this.loan.userBalances(this.owner.address)).toNumber()).to.equal(0);
       await this.loan.connect(this.alice).withdraw(458639);
-      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(1000000 - 458639);
+      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(this.val - 458639);
       await this.loan.connect(this.bob).withdraw(248564);
-      expect((await this.loan.userBalances(this.bob.address)).toNumber()).to.equal(1000000 - 248564);
+      expect((await this.loan.userBalances(this.bob.address)).toNumber()).to.equal(this.val - 248564);
       await this.loan.connect(this.carol).withdraw(948563);
-      expect((await this.loan.userBalances(this.carol.address)).toNumber()).to.equal(1000000 - 948563);
+      expect((await this.loan.userBalances(this.carol.address)).toNumber()).to.equal(this.val - 948563);
     });
 
     it ("User can only withdraw if no money is owed", async function() {
@@ -146,16 +146,16 @@ describe("Loan", function () {
       await this.usdc.deployed();
       this.loan = await this.Loan.deploy(this.usdc.address);
       await this.loan.deployed();
-      await this.usdc.connect(this.owner).mint(this.alice.address, 1000000);
-      await this.usdc.connect(this.owner).mint(this.bob.address, 1000000);
-      await this.usdc.connect(this.owner).mint(this.carol.address, 1000000);
-      await this.usdc.connect(this.owner).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.alice).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.bob).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.carol).approve(this.loan.address, 1000000);
-      await this.loan.connect(this.owner).deposit(1000000);
-      await this.loan.connect(this.alice).deposit(1000000);
-      await this.loan.connect(this.bob).deposit(1000000);
+      await this.usdc.connect(this.owner).mint(this.alice.address, this.val);
+      await this.usdc.connect(this.owner).mint(this.bob.address, this.val);
+      await this.usdc.connect(this.owner).mint(this.carol.address, this.val);
+      await this.usdc.connect(this.owner).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.alice).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.bob).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.carol).approve(this.loan.address, this.val);
+      await this.loan.connect(this.owner).deposit(this.val);
+      await this.loan.connect(this.alice).deposit(this.val);
+      await this.loan.connect(this.bob).deposit(this.val);
     });
 
     it ("Users can call borrow function", async function() {
@@ -178,13 +178,13 @@ describe("Loan", function () {
     });
 
     it ("Borrow function will update stakedBalances", async function() {
-      expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(1000000);
+      expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(this.val);
       await this.loan.connect(this.alice).borrow(800000);
       expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(0);
     });
 
     it ("Borrow function will update userBalances", async function() {
-      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(1000000);
+      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(this.val);
       await this.loan.connect(this.alice).borrow(800000);
       expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(200000);
     });
@@ -214,14 +214,17 @@ describe("Loan", function () {
       await this.usdc.deployed();
       this.loan = await this.Loan.deploy(this.usdc.address);
       await this.loan.deployed();
-      await this.usdc.connect(this.owner).mint(this.alice.address, 1000000);
-      await this.usdc.connect(this.owner).mint(this.bob.address, 1000000);
-      await this.usdc.connect(this.owner).mint(this.carol.address, 1000000);
-      await this.usdc.connect(this.owner).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.alice).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.bob).approve(this.loan.address, 1000000);
-      await this.usdc.connect(this.carol).approve(this.loan.address, 1000000);
+      await this.usdc.connect(this.owner).mint(this.alice.address, this.val);
+      await this.usdc.connect(this.owner).mint(this.bob.address, this.val);
+      await this.usdc.connect(this.owner).mint(this.carol.address, this.val);
+      await this.usdc.connect(this.owner).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.alice).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.bob).approve(this.loan.address, this.val);
+      await this.usdc.connect(this.carol).approve(this.loan.address, this.val);
+      await this.loan.connect(this.owner).deposit(1000);
       await this.loan.connect(this.alice).deposit(1000);
+      await this.loan.connect(this.bob).deposit(1000);
+      await this.loan.connect(this.carol).deposit(1000);
       await this.loan.connect(this.alice).borrow(100);
     });
 
@@ -234,15 +237,15 @@ describe("Loan", function () {
     });
 
     it ("Pay function transfers tokens to contract", async function() {
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(900);
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(3900);
       await this.loan.connect(this.alice).pay(50);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(950);
+      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(3950);
     });
 
     it ("Pay function updates contract balance", async function() {
-      expect((await this.loan.balance()).toNumber()).to.equal(900);
+      expect((await this.loan.balance()).toNumber()).to.equal(3900);
       await this.loan.connect(this.alice).pay(50);
-      expect((await this.loan.balance()).toNumber()).to.equal(950);
+      expect((await this.loan.balance()).toNumber()).to.equal(3950);
     });
 
     it ("Pay function updates feeOwed", async function() {
@@ -290,6 +293,18 @@ describe("Loan", function () {
       expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(875);
       await this.loan.connect(this.alice).pay(110);
       expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(1000);
+    });
+
+    xit.only ("When fees are paid, they get distributed to other stakeholders", async function() {
+      expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(1000);
+      expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(875);
+      expect((await this.loan.stakedBalances(this.bob.address)).toNumber()).to.equal(1000);
+      expect((await this.loan.stakedBalances(this.carol.address)).toNumber()).to.equal(1000);
+      await this.loan.connect(this.alice).pay(8);
+      expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(1002);
+      expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(877);
+      expect((await this.loan.stakedBalances(this.bob.address)).toNumber()).to.equal(1002);
+      expect((await this.loan.stakedBalances(this.carol.address)).toNumber()).to.equal(1002);
     });
   });
 });

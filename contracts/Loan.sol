@@ -6,6 +6,11 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 /*
  * Smart contract to facilitate peer to peer lending
+ *
+ * TODO: transform all numbers to wei to avoid rounding errors in test suites
+ * TODO: add address array to keep track of address with a stakedBalance
+ * TODO: add functionality to disperse fees paid to all addresses with a stakedBalance
+ * TODO: Fee dispersal should be proportional to size of stakedBalance
 */
 
 contract Loan {
@@ -55,7 +60,7 @@ contract Loan {
         require(_amount <= _totalOwed, "More than amount owed");
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
         balance += _amount;
-        
+
         if (feeOwed[msg.sender] > 0) _payFee(_amount);
         else _payPrincipal(_amount);
 
