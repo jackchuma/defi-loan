@@ -65,7 +65,7 @@ describe("Loan", function () {
     it ("Contract keeps track of staked balances", async function() {
       expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(0);
       await this.loan.connect(this.owner).deposit(this.val);
-      expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(this.val);
+      expect(parseInt(ethers.utils.formatEther(await this.loan.stakedBalances(this.owner.address)))).to.equal(1000000);
     });
 
     it ("Cannot deposit if money owed", async function() {
