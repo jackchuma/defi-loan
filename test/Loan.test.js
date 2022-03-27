@@ -202,9 +202,9 @@ describe("Loan", function () {
     });
 
     it ("Borrow function will update contract balance", async function() {
-      expect((await this.loan.balance()).toNumber()).to.equal(3000000);
-      await this.loan.connect(this.alice).borrow(800000);
-      expect((await this.loan.balance()).toNumber()).to.equal(2200000);
+      expect(parseInt(ethers.utils.formatEther(await this.loan.balance()))).to.equal(3000000);
+      await this.loan.connect(this.alice).borrow(ethers.utils.parseEther("800000"));
+      expect(parseInt(ethers.utils.formatEther(await this.loan.balance()))).to.equal(2200000);
     });
   });
 

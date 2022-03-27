@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 /*
  * Smart contract to facilitate peer to peer lending
  *
- * TODO: transform all numbers to wei to avoid rounding errors in test suites
  * TODO: add address array to keep track of address with a stakedBalance
  * TODO: add functionality to disperse fees paid to all addresses with a stakedBalance
  * TODO: Fee dispersal should be proportional to size of stakedBalance
