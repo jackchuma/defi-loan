@@ -41,6 +41,7 @@ contract Loan {
         require(_amount <= userBalances[msg.sender], "Nope");
         balance -= _amount;
         userBalances[msg.sender] -= _amount;
+        stakedBalances[msg.sender] -= _amount;
         IERC20(usdc).transfer(msg.sender, _amount);
     }
 

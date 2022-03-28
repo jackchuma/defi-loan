@@ -169,6 +169,11 @@ describe("Loan", function () {
       await this.loan.connect(this.alice).borrow(800000);
       await expect(this.loan.connect(this.alice).withdraw(1)).to.be.revertedWith("Must pay amount owed");
     });
+
+    it ("Contract keeps track of stakedBalances after withdraw", async function() {
+      await this.loan.connect(this.alice).withdraw(ethers.utils.parseEther("500"));
+      expect(parseInt(ethers.utils.formatEther(await this.loan.stakedBalances(this.alice.address)))).to.equal(1000000 - 500);
+    });
   });
 
   context("Borrow Money", async function() {
