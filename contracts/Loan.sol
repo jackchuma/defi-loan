@@ -7,8 +7,6 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 /*
  * Smart contract to facilitate peer to peer lending
  *
- * TODO: add functionality to disperse fees paid to all addresses with a stakedBalance
- * TODO: Fee dispersal should be proportional to size of stakedBalance
 */
 
 contract Loan {

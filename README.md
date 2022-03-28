@@ -1,3 +1,11 @@
+# Project Details
+
+* Meant to handle only usdc tokens
+* User can deposit any amount of tokens into the contract to begin earning interest from other people paying back loans
+* Users can borrow up to 80% of the tokens they have staked in the contract
+* Once a user has borrowed money, they must pay loan back in full before interacting with the contract in any other way
+* As long as a user does not owe money to the contract, they may withdraw their funds or deposit more
+
 # Advanced Sample Hardhat Project
 
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
