@@ -174,6 +174,12 @@ describe("Loan", function () {
       await this.loan.connect(this.alice).withdraw(ethers.utils.parseEther("500"));
       expect(parseInt(ethers.utils.formatEther(await this.loan.stakedBalances(this.alice.address)))).to.equal(1000000 - 500);
     });
+
+    it ("Removes address from stakedAddresses if full balance is withdrawn", async function() {
+      await this.loan.connect(this.alice).withdraw(this.val);
+      const addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(3);
+    });
   });
 
   context("Borrow Money", async function() {

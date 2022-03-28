@@ -42,7 +42,17 @@ contract Loan {
         balance -= _amount;
         userBalances[msg.sender] -= _amount;
         stakedBalances[msg.sender] -= _amount;
+        if (stakedBalances[msg.sender] == 0) _removeAddress(msg.sender, stakedAddresses);
         IERC20(usdc).transfer(msg.sender, _amount);
+    }
+
+    function _removeAddress(address _rem, address[] storage _list) private {
+        for (uint i=0; i<_list.length; i++) {
+            if (_list[i] == _rem) {
+                _list[i] = _list[_list.length - 1];
+                _list.pop();
+            }
+        }
     }
 
     function borrow(uint256 _amount) external {
