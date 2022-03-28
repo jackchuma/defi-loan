@@ -73,6 +73,22 @@ describe("Loan", function () {
       await this.loan.connect(this.alice).borrow(100);
       await expect(this.loan.connect(this.alice).deposit(100)).to.be.revertedWith('Must pay amount owed');
     });
+
+    it ("Contract keeps track of addresses with a staked balance", async function() {
+      let addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(0);
+
+      await this.loan.connect(this.alice).deposit(this.val);
+      addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(1);
+      expect(addrs[0]).to.equal(this.alice.address);
+
+      await this.loan.connect(this.bob).deposit(this.val);
+      addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(2);
+      expect(addrs[0]).to.equal(this.alice.address);
+      expect(addrs[1]).to.equal(this.bob.address);
+    });
   });
 
   context("Withdraw money from contract", async function() {

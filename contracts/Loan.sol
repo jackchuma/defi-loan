@@ -16,6 +16,7 @@ contract Loan {
 
     address public usdc;
     uint256 public balance;
+    address[] private stakedAddresses;
 
     mapping(address => uint256) public stakedBalances; // address values to check how much can be borrowed (80% of this value can be borrowed)
     mapping(address => uint256) public userBalances; // user's total balance
@@ -32,6 +33,7 @@ contract Loan {
         balance += _amount;
         userBalances[msg.sender] += _amount;
         stakedBalances[msg.sender] += _amount;
+        stakedAddresses.push(msg.sender);
     }
 
     function withdraw(uint256 _amount) external {
@@ -82,5 +84,9 @@ contract Loan {
     function _payPrincipal(uint256 _amount) private {
         amountOwed[msg.sender] -= _amount;
         userBalances[msg.sender] += _amount;
+    }
+
+    function getStakedAddresses() external view returns (address[] memory) {
+        return stakedAddresses;
     }
 }
