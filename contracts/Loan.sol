@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 /*
  * Smart contract to facilitate peer to peer lending
  *
- * TODO: add address array to keep track of address with a stakedBalance
  * TODO: add functionality to disperse fees paid to all addresses with a stakedBalance
  * TODO: Fee dispersal should be proportional to size of stakedBalance
 */
@@ -46,15 +45,6 @@ contract Loan {
         IERC20(usdc).transfer(msg.sender, _amount);
     }
 
-    function _removeAddress(address _rem, address[] storage _list) private {
-        for (uint i=0; i<_list.length; i++) {
-            if (_list[i] == _rem) {
-                _list[i] = _list[_list.length - 1];
-                _list.pop();
-            }
-        }
-    }
-
     function borrow(uint256 _amount) external {
         uint256 _upAmount = _amount * 5 / 4;
         require(_upAmount <= stakedBalances[msg.sender], "Not enough staked");
@@ -84,6 +74,12 @@ contract Loan {
     }
 
     function _payFee(uint256 _amount) private {
+        uint _mul = _amount / balance + 1;
+
+        for (uint i=0; i<stakedAddresses.length; i++) {
+            stakedBalances[stakedAddresses[i]] *= _mul;
+        }
+
         if (_amount <= feeOwed[msg.sender]) {
             feeOwed[msg.sender] -= _amount;
         } else {
@@ -97,6 +93,15 @@ contract Loan {
     function _payPrincipal(uint256 _amount) private {
         amountOwed[msg.sender] -= _amount;
         userBalances[msg.sender] += _amount;
+    }
+
+    function _removeAddress(address _rem, address[] storage _list) private {
+        for (uint i=0; i<_list.length; i++) {
+            if (_list[i] == _rem) {
+                _list[i] = _list[_list.length - 1];
+                _list.pop();
+            }
+        }
     }
 
     function getStakedAddresses() external view returns (address[] memory) {

@@ -36,24 +36,24 @@ describe("Loan", function () {
 
     it ("Users can deposit money to Loan contract", async function() {
       await this.loan.connect(this.owner).deposit(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(1000000);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(1000000);
       await this.loan.connect(this.alice).deposit(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(2000000);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(2000000);
       await this.loan.connect(this.bob).deposit(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(3000000);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(3000000);
       await this.loan.connect(this.carol).deposit(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(4000000);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(4000000);
     });
 
     it ("Contract balance is updated from deposit", async function() {
       expect((await this.loan.balance()).toNumber()).to.equal(0);
       await this.loan.connect(this.owner).deposit(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(1000000);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(1000000);
     });
 
     it ("Contract keeps track of user balances", async function() {
       await this.loan.connect(this.owner).deposit(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.owner.address)))).to.equal(1000000);
+      expect(fromWei(await this.loan.userBalances(this.owner.address))).to.equal(1000000);
       await this.loan.connect(this.alice).deposit(458639);
       expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(458639);
       await this.loan.connect(this.bob).deposit(248564);
@@ -65,7 +65,7 @@ describe("Loan", function () {
     it ("Contract keeps track of staked balances", async function() {
       expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(0);
       await this.loan.connect(this.owner).deposit(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.loan.stakedBalances(this.owner.address)))).to.equal(1000000);
+      expect(fromWei(await this.loan.stakedBalances(this.owner.address))).to.equal(1000000);
     });
 
     it ("Cannot deposit if money owed", async function() {
@@ -126,22 +126,22 @@ describe("Loan", function () {
     });
 
     it ("Users can withdraw money from contract", async function() {
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(4000000);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(4000000);
       await this.loan.connect(this.owner).withdraw(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.owner.address)))).to.equal(1000000);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(3000000);
+      expect(fromWei(await this.usdc.balanceOf(this.owner.address))).to.equal(1000000);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(3000000);
 
       await this.loan.connect(this.alice).withdraw(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.alice.address)))).to.equal(1000000);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(2000000);
+      expect(fromWei(await this.usdc.balanceOf(this.alice.address))).to.equal(1000000);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(2000000);
 
       await this.loan.connect(this.bob).withdraw(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.bob.address)))).to.equal(1000000);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(1000000);
+      expect(fromWei(await this.usdc.balanceOf(this.bob.address))).to.equal(1000000);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(1000000);
 
       await this.loan.connect(this.carol).withdraw(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.carol.address)))).to.equal(1000000);
-      expect(parseInt(ethers.utils.formatEther(await this.usdc.balanceOf(this.loan.address)))).to.equal(0);
+      expect(fromWei(await this.usdc.balanceOf(this.carol.address))).to.equal(1000000);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(0);
     });
 
     it ("Cannot withdraw more money than user's balance", async function() {
@@ -149,20 +149,20 @@ describe("Loan", function () {
     });
 
     it ("Contract balance is updated from withdraw", async function() {
-      expect(parseInt(ethers.utils.formatEther(await this.loan.balance()))).to.equal(4000000);
+      expect(fromWei(await this.loan.balance())).to.equal(4000000);
       await this.loan.connect(this.owner).withdraw(this.val);
-      expect(parseInt(ethers.utils.formatEther(await this.loan.balance()))).to.equal(3000000);
+      expect(fromWei(await this.loan.balance())).to.equal(3000000);
     });
 
     it ("Contract keeps track of user balances after withdraw", async function() {
       await this.loan.connect(this.owner).withdraw(this.val);
       expect((await this.loan.userBalances(this.owner.address)).toNumber()).to.equal(0);
       await this.loan.connect(this.alice).withdraw(ethers.utils.parseEther("458639"));
-      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.alice.address)))).to.equal(1000000 - 458639);
+      expect(fromWei(await this.loan.userBalances(this.alice.address))).to.equal(1000000 - 458639);
       await this.loan.connect(this.bob).withdraw(ethers.utils.parseEther("248564"));
-      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.bob.address)))).to.equal(1000000 - 248564);
+      expect(fromWei(await this.loan.userBalances(this.bob.address))).to.equal(1000000 - 248564);
       await this.loan.connect(this.carol).withdraw(ethers.utils.parseEther("948563"));
-      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.carol.address)))).to.equal(1000000 - 948563);
+      expect(fromWei(await this.loan.userBalances(this.carol.address))).to.equal(1000000 - 948563);
     });
 
     it ("User can only withdraw if no money is owed", async function() {
@@ -172,7 +172,7 @@ describe("Loan", function () {
 
     it ("Contract keeps track of stakedBalances after withdraw", async function() {
       await this.loan.connect(this.alice).withdraw(ethers.utils.parseEther("500"));
-      expect(parseInt(ethers.utils.formatEther(await this.loan.stakedBalances(this.alice.address)))).to.equal(1000000 - 500);
+      expect(fromWei(await this.loan.stakedBalances(this.alice.address))).to.equal(1000000 - 500);
     });
 
     it ("Removes address from stakedAddresses if full balance is withdrawn", async function() {
@@ -220,15 +220,15 @@ describe("Loan", function () {
     });
 
     it ("Borrow function will update stakedBalances", async function() {
-      expect(parseInt(ethers.utils.formatEther(await this.loan.stakedBalances(this.alice.address)))).to.equal(1000000);
+      expect(fromWei(await this.loan.stakedBalances(this.alice.address))).to.equal(1000000);
       await this.loan.connect(this.alice).borrow(ethers.utils.parseEther("800000"));
-      expect(parseInt(ethers.utils.formatEther(await this.loan.stakedBalances(this.alice.address)))).to.equal(0);
+      expect(fromWei(await this.loan.stakedBalances(this.alice.address))).to.equal(0);
     });
 
     it ("Borrow function will update userBalances", async function() {
-      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.alice.address)))).to.equal(1000000);
+      expect(fromWei(await this.loan.userBalances(this.alice.address))).to.equal(1000000);
       await this.loan.connect(this.alice).borrow(ethers.utils.parseEther("800000"));
-      expect(parseInt(ethers.utils.formatEther(await this.loan.userBalances(this.alice.address)))).to.equal(200000);
+      expect(fromWei(await this.loan.userBalances(this.alice.address))).to.equal(200000);
     });
 
     it ("Borrow function will update amountOwed", async function() {
@@ -244,9 +244,9 @@ describe("Loan", function () {
     });
 
     it ("Borrow function will update contract balance", async function() {
-      expect(parseInt(ethers.utils.formatEther(await this.loan.balance()))).to.equal(3000000);
+      expect(fromWei(await this.loan.balance())).to.equal(3000000);
       await this.loan.connect(this.alice).borrow(ethers.utils.parseEther("800000"));
-      expect(parseInt(ethers.utils.formatEther(await this.loan.balance()))).to.equal(2200000);
+      expect(fromWei(await this.loan.balance())).to.equal(2200000);
     });
 
     it ("Removes address from stakedAddresses if 80% of balance is borrowed", async function() {
@@ -271,15 +271,15 @@ describe("Loan", function () {
       await this.usdc.connect(this.alice).approve(this.loan.address, this.val);
       await this.usdc.connect(this.bob).approve(this.loan.address, this.val);
       await this.usdc.connect(this.carol).approve(this.loan.address, this.val);
-      await this.loan.connect(this.owner).deposit(1000);
-      await this.loan.connect(this.alice).deposit(1000);
-      await this.loan.connect(this.bob).deposit(1000);
-      await this.loan.connect(this.carol).deposit(1000);
-      await this.loan.connect(this.alice).borrow(100);
+      await this.loan.connect(this.owner).deposit(ethers.utils.parseEther("1000"));
+      await this.loan.connect(this.alice).deposit(ethers.utils.parseEther("1000"));
+      await this.loan.connect(this.bob).deposit(ethers.utils.parseEther("1000"));
+      await this.loan.connect(this.carol).deposit(ethers.utils.parseEther("1000"));
+      await this.loan.connect(this.alice).borrow(ethers.utils.parseEther("100"));
     });
 
     it ("Users can call pay function", async function() {
-      await this.loan.connect(this.alice).pay(100);
+      await this.loan.connect(this.alice).pay(ethers.utils.parseEther("100"));
     });
 
     it ("Users can only call pay function if they owe money", async function() {
@@ -287,62 +287,62 @@ describe("Loan", function () {
     });
 
     it ("Pay function transfers tokens to contract", async function() {
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(3900);
-      await this.loan.connect(this.alice).pay(50);
-      expect((await this.usdc.balanceOf(this.loan.address)).toNumber()).to.equal(3950);
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(3900);
+      await this.loan.connect(this.alice).pay(ethers.utils.parseEther("50"));
+      expect(fromWei(await this.usdc.balanceOf(this.loan.address))).to.equal(3950);
     });
 
     it ("Pay function updates contract balance", async function() {
-      expect((await this.loan.balance()).toNumber()).to.equal(3900);
-      await this.loan.connect(this.alice).pay(50);
-      expect((await this.loan.balance()).toNumber()).to.equal(3950);
+      expect(fromWei(await this.loan.balance())).to.equal(3900);
+      await this.loan.connect(this.alice).pay(ethers.utils.parseEther("50"));
+      expect(fromWei(await this.loan.balance())).to.equal(3950);
     });
 
     it ("Pay function updates feeOwed", async function() {
-      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(10);
-      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(100);
-      await this.loan.connect(this.alice).pay(5);
-      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(5);
-      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(100);
+      expect(fromWei(await this.loan.feeOwed(this.alice.address))).to.equal(10);
+      expect(fromWei(await this.loan.amountOwed(this.alice.address))).to.equal(100);
+      await this.loan.connect(this.alice).pay(ethers.utils.parseEther("5"));
+      expect(fromWei(await this.loan.feeOwed(this.alice.address))).to.equal(5);
+      expect(fromWei(await this.loan.amountOwed(this.alice.address))).to.equal(100);
     });
 
     it ("Pay function updates feeOwed when full fee payed", async function() {
-      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(10);
-      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(100);
-      await this.loan.connect(this.alice).pay(10);
-      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(0);
-      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(100);
+      expect(fromWei(await this.loan.feeOwed(this.alice.address))).to.equal(10);
+      expect(fromWei(await this.loan.amountOwed(this.alice.address))).to.equal(100);
+      await this.loan.connect(this.alice).pay(ethers.utils.parseEther("10"));
+      expect(fromWei(await this.loan.feeOwed(this.alice.address))).to.equal(0);
+      expect(fromWei(await this.loan.amountOwed(this.alice.address))).to.equal(100);
     });
 
     it ("Proper updates when payment made that exceeds fees owed but not total owed", async function() {
-      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(10);
-      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(100);
-      await this.loan.connect(this.alice).pay(50);
-      expect((await this.loan.feeOwed(this.alice.address)).toNumber()).to.equal(0);
-      expect((await this.loan.amountOwed(this.alice.address)).toNumber()).to.equal(60);
+      expect(fromWei(await this.loan.feeOwed(this.alice.address))).to.equal(10);
+      expect(fromWei(await this.loan.amountOwed(this.alice.address))).to.equal(100);
+      await this.loan.connect(this.alice).pay(ethers.utils.parseEther("50"));
+      expect(fromWei(await this.loan.feeOwed(this.alice.address))).to.equal(0);
+      expect(fromWei(await this.loan.amountOwed(this.alice.address))).to.equal(60);
     });
 
     it ("Cannot pay more than amount owed", async function() {
-      await expect(this.loan.connect(this.alice).pay(200)).to.be.revertedWith("More than amount owed");
+      await expect(this.loan.connect(this.alice).pay(ethers.utils.parseEther("200"))).to.be.revertedWith("More than amount owed");
     });
 
     it ("Pay function updates userBalances", async function() {
-      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(900);
-      await this.loan.connect(this.alice).pay(50);
-      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(940);
+      expect(fromWei(await this.loan.userBalances(this.alice.address))).to.equal(900);
+      await this.loan.connect(this.alice).pay(ethers.utils.parseEther("50"));
+      expect(fromWei(await this.loan.userBalances(this.alice.address))).to.equal(940);
     });
 
     it ("Pay function updates userBalances when no fee owed", async function() {
-      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(900);
-      await this.loan.connect(this.alice).pay(10);
-      await this.loan.connect(this.alice).pay(50);
-      expect((await this.loan.userBalances(this.alice.address)).toNumber()).to.equal(950);
+      expect(fromWei(await this.loan.userBalances(this.alice.address))).to.equal(900);
+      await this.loan.connect(this.alice).pay(ethers.utils.parseEther("10"));
+      await this.loan.connect(this.alice).pay(ethers.utils.parseEther("50"));
+      expect(fromWei(await this.loan.userBalances(this.alice.address))).to.equal(950);
     });
 
     it ("If user pays off full balance, stakedBalances is updated", async function() {
-      expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(875);
-      await this.loan.connect(this.alice).pay(110);
-      expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(1000);
+      expect(fromWei(await this.loan.stakedBalances(this.alice.address))).to.equal(875);
+      await this.loan.connect(this.alice).pay(ethers.utils.parseEther("110"));
+      expect(fromWei(await this.loan.stakedBalances(this.alice.address))).to.equal(1000);
     });
 
     it ("Adds user to stakedAddresses if full loan is paid back", async function() {
@@ -353,14 +353,14 @@ describe("Loan", function () {
       expect(addrs[2]).to.equal(this.bob.address);
       expect(addrs[3]).to.equal(this.carol.address);
 
-      await this.loan.connect(this.bob).borrow(800);
+      await this.loan.connect(this.bob).borrow(ethers.utils.parseEther("800"));
       addrs = await this.loan.getStakedAddresses();
       expect(addrs.length).to.equal(3);
       expect(addrs[0]).to.equal(this.owner.address);
       expect(addrs[1]).to.equal(this.alice.address);
       expect(addrs[2]).to.equal(this.carol.address);
 
-      await this.loan.connect(this.bob).pay(880);
+      await this.loan.connect(this.bob).pay(ethers.utils.parseEther("880"));
       addrs = await this.loan.getStakedAddresses();
       expect(addrs.length).to.equal(4);
       expect(addrs[0]).to.equal(this.owner.address);
@@ -382,3 +382,7 @@ describe("Loan", function () {
     });
   });
 });
+
+function fromWei(num) {
+  return parseInt(ethers.utils.formatEther(num));
+}
