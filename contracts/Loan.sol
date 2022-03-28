@@ -74,10 +74,10 @@ contract Loan {
     }
 
     function _payFee(uint256 _amount) private {
-        uint _mul = _amount / balance + 1;
+        uint _add = _amount <= feeOwed[msg.sender] ? _amount / stakedAddresses.length : feeOwed[msg.sender];
 
         for (uint i=0; i<stakedAddresses.length; i++) {
-            stakedBalances[stakedAddresses[i]] *= _mul;
+            stakedBalances[stakedAddresses[i]] += _add;
         }
 
         if (_amount <= feeOwed[msg.sender]) {

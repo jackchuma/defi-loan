@@ -369,16 +369,16 @@ describe("Loan", function () {
       expect(addrs[3]).to.equal(this.bob.address);
     });
 
-    xit.only ("When fees are paid, they get distributed to other stakeholders", async function() {
-      expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(1000);
-      expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(875);
-      expect((await this.loan.stakedBalances(this.bob.address)).toNumber()).to.equal(1000);
-      expect((await this.loan.stakedBalances(this.carol.address)).toNumber()).to.equal(1000);
-      await this.loan.connect(this.alice).pay(8);
-      expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(1002);
-      expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(877);
-      expect((await this.loan.stakedBalances(this.bob.address)).toNumber()).to.equal(1002);
-      expect((await this.loan.stakedBalances(this.carol.address)).toNumber()).to.equal(1002);
+    it ("When fees are paid, they get distributed to other stakeholders", async function() {
+      expect(fromWei(await this.loan.stakedBalances(this.owner.address))).to.equal(1000);
+      expect(fromWei(await this.loan.stakedBalances(this.alice.address))).to.equal(875);
+      expect(fromWei(await this.loan.stakedBalances(this.bob.address))).to.equal(1000);
+      expect(fromWei(await this.loan.stakedBalances(this.carol.address))).to.equal(1000);
+      await this.loan.connect(this.alice).pay(toWei("8"));
+      expect(fromWei(await this.loan.stakedBalances(this.owner.address))).to.equal(1002);
+      expect(fromWei(await this.loan.stakedBalances(this.alice.address))).to.equal(877);
+      expect(fromWei(await this.loan.stakedBalances(this.bob.address))).to.equal(1002);
+      expect(fromWei(await this.loan.stakedBalances(this.carol.address))).to.equal(1002);
     });
   });
 });
