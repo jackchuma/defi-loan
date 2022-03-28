@@ -32,8 +32,8 @@ contract Loan {
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
         balance += _amount;
         userBalances[msg.sender] += _amount;
+        if (stakedBalances[msg.sender] == 0) stakedAddresses.push(msg.sender);
         stakedBalances[msg.sender] += _amount;
-        stakedAddresses.push(msg.sender);
     }
 
     function withdraw(uint256 _amount) external {

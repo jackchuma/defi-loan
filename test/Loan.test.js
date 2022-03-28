@@ -89,6 +89,21 @@ describe("Loan", function () {
       expect(addrs[0]).to.equal(this.alice.address);
       expect(addrs[1]).to.equal(this.bob.address);
     });
+
+    it ("Will only add address to stakedAddresses if not already there", async function() {
+      let addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(0);
+
+      await this.loan.connect(this.alice).deposit(1000);
+      addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(1);
+      expect(addrs[0]).to.equal(this.alice.address);
+
+      await this.loan.connect(this.alice).deposit(1000);
+      addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(1);
+      expect(addrs[0]).to.equal(this.alice.address);
+    });
   });
 
   context("Withdraw money from contract", async function() {
