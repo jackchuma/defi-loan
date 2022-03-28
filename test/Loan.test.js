@@ -248,6 +248,14 @@ describe("Loan", function () {
       await this.loan.connect(this.alice).borrow(ethers.utils.parseEther("800000"));
       expect(parseInt(ethers.utils.formatEther(await this.loan.balance()))).to.equal(2200000);
     });
+
+    it ("Removes address from stakedAddresses if 80% of balance is borrowed", async function() {
+      await this.loan.connect(this.alice).borrow(ethers.utils.parseEther("800000"));
+      const addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(2);
+      expect(addrs[0]).to.equal(this.owner.address);
+      expect(addrs[1]).to.equal(this.bob.address);
+    });
   });
 
   context("Pay back loan", async function() {

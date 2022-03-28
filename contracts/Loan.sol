@@ -60,6 +60,7 @@ contract Loan {
         require(_upAmount <= stakedBalances[msg.sender], "Not enough staked");
         balance -= _amount;
         stakedBalances[msg.sender] -= _upAmount;
+        if (stakedBalances[msg.sender] == 0) _removeAddress(msg.sender, stakedAddresses);
         userBalances[msg.sender] -= _amount;
         amountOwed[msg.sender] += _amount;
         feeOwed[msg.sender] += (_amount / 10);
