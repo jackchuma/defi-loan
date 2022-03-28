@@ -78,6 +78,7 @@ contract Loan {
         else _payPrincipal(_amount);
 
         if (amountOwed[msg.sender] == 0) {
+            if (stakedBalances[msg.sender] == 0) stakedAddresses.push(msg.sender);
             stakedBalances[msg.sender] = userBalances[msg.sender];
         }
     }

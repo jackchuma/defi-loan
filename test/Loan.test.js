@@ -345,6 +345,30 @@ describe("Loan", function () {
       expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(1000);
     });
 
+    it ("Adds user to stakedAddresses if full loan is paid back", async function() {
+      let addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(4);
+      expect(addrs[0]).to.equal(this.owner.address);
+      expect(addrs[1]).to.equal(this.alice.address);
+      expect(addrs[2]).to.equal(this.bob.address);
+      expect(addrs[3]).to.equal(this.carol.address);
+
+      await this.loan.connect(this.bob).borrow(800);
+      addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(3);
+      expect(addrs[0]).to.equal(this.owner.address);
+      expect(addrs[1]).to.equal(this.alice.address);
+      expect(addrs[2]).to.equal(this.carol.address);
+
+      await this.loan.connect(this.bob).pay(880);
+      addrs = await this.loan.getStakedAddresses();
+      expect(addrs.length).to.equal(4);
+      expect(addrs[0]).to.equal(this.owner.address);
+      expect(addrs[1]).to.equal(this.alice.address);
+      expect(addrs[2]).to.equal(this.carol.address);
+      expect(addrs[3]).to.equal(this.bob.address);
+    });
+
     xit.only ("When fees are paid, they get distributed to other stakeholders", async function() {
       expect((await this.loan.stakedBalances(this.owner.address)).toNumber()).to.equal(1000);
       expect((await this.loan.stakedBalances(this.alice.address)).toNumber()).to.equal(875);
