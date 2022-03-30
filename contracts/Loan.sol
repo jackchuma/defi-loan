@@ -98,6 +98,7 @@ contract Loan {
             if (_list[i] == _rem) {
                 _list[i] = _list[_list.length - 1];
                 _list.pop();
+                break;
             }
         }
     }
