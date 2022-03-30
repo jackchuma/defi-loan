@@ -24,6 +24,12 @@ contract Loan {
         usdc = _usdc;
     }
 
+    /**
+     * @notice To be called by user who wants to deposit funds in this contract
+     * @dev Can only be called if user does not owe money to contract
+     * @dev Transfers funds to contract, then updates contracts state and adds msg.sender to stakedAddresses if not already there
+     * @param _amount Amount of tokens to deposit
+    */
     function deposit(uint256 _amount) external {
         require(amountOwed[msg.sender] == 0, "Must pay amount owed");
         IERC20(usdc).transferFrom(msg.sender, address(this), _amount);
@@ -33,6 +39,13 @@ contract Loan {
         stakedBalances[msg.sender] += _amount;
     }
 
+    /**
+     * @notice To be called by user who wants to withdraw funds from contract
+     * @dev Can only withdraw if user does not owe money to contract
+     * @dev Can withdraw up to user's total balance held in contract
+     * @dev Updates contracts state and then transfers funds to user to avoid reentrancy
+     * @param _amount Amount of tokens to withdraw
+    */
     function withdraw(uint256 _amount) external {
         require(amountOwed[msg.sender] == 0, "Must pay amount owed");
         require(_amount <= userBalances[msg.sender], "Nope");
@@ -43,6 +56,12 @@ contract Loan {
         IERC20(usdc).transfer(msg.sender, _amount);
     }
 
+    /**
+     * @notice To be called by a user with a staked balance in this contract that wants to borrow money
+     * @dev Can only borrow up to 80% of their staked balance
+     * @dev Updates contract state and then transfers funds
+     * @param _amount Amount of tokens to borrow
+    */
     function borrow(uint256 _amount) external {
         uint256 _upAmount = _amount * 5 / 4;
         require(_upAmount <= stakedBalances[msg.sender], "Not enough staked");
@@ -55,6 +74,13 @@ contract Loan {
         IERC20(usdc).transfer(msg.sender, _amount);
     }
 
+    /**
+     * @notice To be called by a user that wants to pay back a loan to the contract
+     * @dev User must owe money to contract, and cannot pay more than they owe
+     * @dev Transfers funds then updates contract state
+     * @dev If full loan is paid back, adds msg.sender to stakedAddresses array and updates their staked balance
+     * @param _amount Amount of tokens to pay
+    */
     function pay(uint256 _amount) external {
         require(amountOwed[msg.sender] > 0, "No money owed");
         uint256 _totalOwed = amountOwed[msg.sender] + feeOwed[msg.sender];
@@ -103,6 +129,9 @@ contract Loan {
         }
     }
 
+    /**
+     * @dev Helper function that returns stakedAddresses array
+    */
     function getStakedAddresses() external view returns (address[] memory) {
         return stakedAddresses;
     }
