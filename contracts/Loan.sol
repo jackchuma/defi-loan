@@ -97,6 +97,11 @@ contract Loan {
         }
     }
 
+    /**
+     * @notice Pays the fee portion of a user's loan
+     * @dev Will pay overflow funds into principal portion of loan
+     * @param _amount Amount of funds being paid
+    */
     function _payFee(uint256 _amount) private {
         uint _add = _amount <= feeOwed[msg.sender] ? _amount / stakedAddresses.length : feeOwed[msg.sender];
 
@@ -114,11 +119,21 @@ contract Loan {
         }
     }
 
+    /**
+     * @notice Pays the principal portion of a user's loan if they have already paid their fee
+     * @param _amount Amount of funds being paid
+    */
     function _payPrincipal(uint256 _amount) private {
         amountOwed[msg.sender] -= _amount;
         userBalances[msg.sender] += _amount;
     }
 
+    /**
+     * @notice Removes a specific address from a list of addresses
+     * @dev Does not check for duplicates
+     * @param _rem Address to remove
+     * @param _list List of addresses
+    */
     function _removeAddress(address _rem, address[] storage _list) private {
         for (uint i=0; i<_list.length; i++) {
             if (_list[i] == _rem) {
