@@ -103,7 +103,7 @@ contract Loan {
      * @param _amount Amount of funds being paid
     */
     function _payFee(uint256 _amount) private {
-        uint _add = _amount <= feeOwed[msg.sender] ? _amount / stakedAddresses.length : feeOwed[msg.sender];
+        uint _add = _amount <= feeOwed[msg.sender] ? _amount / stakedAddresses.length : feeOwed[msg.sender] / stakedAddresses.length;
 
         for (uint i=0; i<stakedAddresses.length; i++) {
             stakedBalances[stakedAddresses[i]] += _add;
