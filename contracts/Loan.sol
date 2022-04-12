@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 /*
- * Smart contract to facilitate peer to peer lending
- *
+ * @title Smart contract to facilitate peer to peer lending
+ * @author Jack Chuma
+ * @notice You can use this contract participate in peer to peer lending
 */
 
 contract Loan {
